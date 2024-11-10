@@ -8,7 +8,7 @@ Complètement en français !
 
 ## Fonctionnalités du bot PristisVerify
 
-<p align="center">🟢 Traduction en français <b>100%</b></p>
+<p align="center">🟢 Traduction en français <b>100%</b><br /><b>La version originale de Nates a été reprise par xb3n6e, modifiée et publiée par OxiWan.</b></p>
 
 ### 1. **Vérification des utilisateurs via reCAPTCHA**
    - Le bot utilise Google reCAPTCHA v2 pour vérifier que les nouveaux utilisateurs ne sont pas des robots. Lorsqu'un utilisateur rejoint le serveur, il reçoit un lien vers un formulaire reCAPTCHA à compléter.
@@ -58,6 +58,7 @@ Complètement en français !
      - Gestion des exceptions non gérées (`uncaughtException`).
      - Gestion des promesses rejetées non gérées (`unhandledRejection`).
    - Cela garantit que le bot reste opérationnel même en cas d'erreurs inattendues.
+
 
 ## Prérequis
 
