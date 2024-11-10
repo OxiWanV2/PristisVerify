@@ -6,7 +6,58 @@ Un bot de vérification Discord utilisant reCAPTCHA v2.
 Complètement en français !
 </h3>
 
+## Fonctionnalités du bot PristisVerify
+
 <p align="center">🟢 Traduction en français <b>100%</b></p>
+
+### 1. **Vérification des utilisateurs via reCAPTCHA**
+   - Le bot utilise Google reCAPTCHA v2 pour vérifier que les nouveaux utilisateurs ne sont pas des robots. Lorsqu'un utilisateur rejoint le serveur, il reçoit un lien vers un formulaire reCAPTCHA à compléter.
+   - Une fois la vérification réussie, le bot attribue automatiquement un rôle "vérifié" à l'utilisateur.
+
+### 2. **Gestion des rôles**
+   - **Attribution automatique du rôle vérifié** : Après avoir complété la vérification via reCAPTCHA, le bot attribue un rôle spécifique (défini dans la configuration) à l'utilisateur.
+   - **Suppression automatique d'un rôle** : Si activé dans la configuration (`removeRole: true`), le bot peut également retirer un rôle spécifique une fois que l'utilisateur est vérifié.
+   - **Rôle administrateur** : Un rôle administrateur peut être défini pour accorder des privilèges spéciaux aux administrateurs lors de certaines interactions avec le bot.
+
+### 3. **Présence personnalisée du bot**
+   - Le bot peut afficher un statut personnalisé sur Discord, tel que "regarde les utilisateurs non vérifiés", "écoute", ou "en compétition". Le type de statut et le message peuvent être configurés dans le fichier `config.js`.
+   - **Types de statuts disponibles** :
+     - Jouer (PLAYING)
+     - Diffuser (STREAMING)
+     - Écouter (LISTENING)
+     - Regarder (WATCHING)
+     - Compétition (COMPETING)
+
+### 4. **Affichage des règles du serveur**
+   - Si activé (`rulesEnabled: true`), le bot peut envoyer un message contenant les règles du serveur aux nouveaux membres lorsqu'ils rejoignent. Ces règles sont présentées sous forme d'intégration (*embed*) avec un titre et une couleur personnalisables.
+   - Les utilisateurs doivent accepter ces règles avant de pouvoir continuer avec la vérification.
+
+### 5. **Système de gestion des liens d'invitation**
+   - Le bot peut fournir un lien d'invitation Discord personnalisé pour rejoindre le serveur, ce qui permet aux nouveaux utilisateurs d'accéder facilement au serveur pour commencer la vérification.
+
+### 6. **Serveur web intégré pour la vérification**
+   - Le bot inclut un petit serveur web qui gère les requêtes HTTP pour la vérification via reCAPTCHA.
+     - **HTTPS supporté** : Si activé, le serveur peut fonctionner en HTTPS avec des certificats SSL fournis par l'utilisateur (`certificate.pem` et `private.pem`).
+     - Les utilisateurs peuvent accéder à une page web où ils complètent le reCAPTCHA pour prouver qu'ils ne sont pas des robots.
+
+### 7. **Commandes slash personnalisées**
+   - Le bot utilise les commandes slash de Discord pour permettre aux administrateurs et aux utilisateurs d'interagir avec lui directement depuis l'interface Discord.
+     - **/verify** : Commande permettant aux utilisateurs de demander leur vérification manuellement.
+     - **/unverify** : Commande permettant aux utilisateurs de se dévérifier eux-mêmes si nécessaire.
+     - **/verifyembed** : Envoie une intégration avec un bouton de réaction ; lorsque l'utilisateur clique dessus, il reçoit automatiquement le rôle vérifié.
+
+### 8. **Journalisation avancée avec Signale**
+   - Le bot utilise la bibliothèque `Signale` pour journaliser les événements importants, comme :
+     - Les erreurs lors de l'attribution ou suppression des rôles.
+     - Les tentatives échouées d'envoi de messages privés (par exemple, si les DMs sont désactivés).
+     - Les actions réussies comme l'attribution du rôle vérifié ou la suppression d'un rôle.
+   - Chaque action critique est enregistrée dans la console avec différents niveaux de gravité (info, warning, error).
+
+### 9. **Anti-crash et gestion des erreurs**
+   - Le bot est équipé d'un système anti-crash pour capturer les erreurs non gérées et éviter qu'il ne plante :
+     - Gestion des exceptions non gérées (`uncaughtException`).
+     - Gestion des promesses rejetées non gérées (`unhandledRejection`).
+   - Cela garantit que le bot reste opérationnel même en cas d'erreurs inattendues.
 
 ## Prérequis
 
