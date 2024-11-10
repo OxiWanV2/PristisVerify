@@ -1,10 +1,7 @@
-
-// —— Requiring the packages that we need for this file.
 const { Signale } = require('signale');
 const createCode = require('./public/util.js').createCode;
 const logger = new Signale({ scope: 'Pool' }); 
 
-// —— Making the functions!!
 let linkPool = [];
 
 function createLink(discordID) { 
@@ -16,7 +13,7 @@ function createLink(discordID) {
     setTimeout(function() {
         if (isValidLink(linkID)) removeLink(linkID);
     }, 900000);
-    logger.info('Created new link ID:', linkID);
+    logger.info('Nouveau lien ID créé:', linkID);
     return linkID;
 }
 
