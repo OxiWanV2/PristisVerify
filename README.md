@@ -2,7 +2,7 @@
 🔑 PristisVerify
 </h2>
 <h3 align="center">
-Un bot de vérification Discord utilisant reCAPTCHA v2.
+Un bot de vérification Discord utilisant reCAPTCHA v2.  
 Complètement en français !
 </h3>
 
@@ -22,38 +22,36 @@ Complètement en français !
 - Pour exécuter votre propre version sur Repl.it, créez un nouveau projet et cliquez sur le bouton `Importer depuis Github`, puis copiez l'URL de ce dépôt et collez-la sur le site Repl.it.
 
 - Voici à quoi ressemble le fichier de configuration et les éléments requis pour que le bot fonctionne correctement :
+
 ```js
+// Renommez-le en config.js !
 module.exports = {
-    server: {
-        domain: "localhost",
-        https: false,
-        httpPort: 8080,
-    },
-
-    Discord: {
-        // —— Éléments requis pour que l'ensemble du projet fonctionne.
-        token: "", // —— Le token de votre bot.
-        botId: "", // —— L'ID du bot.
-        guildId: "", // —— L'ID du serveur où les commandes seront déployées.
-        verifiedRole: "", // —— Rôle qui sera ajouté à l'utilisateur lorsqu'il vérifiera son compte.
-
-        // —— Pour les utilisateurs qui souhaitent qu'un rôle soit supprimé lors de la vérification, si vous voulez cela, réglez removeRole à true et définissez l'ID du rôle à supprimer.
-        removeRole: false,
-        removeRoleId: "",
-
-        // —— Définissez la présence du bot. Pour statusType, voir : https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityType
-        statusType: 3, // 1 (STREAMING), 2 (LISTENING), 3 (WATCHING), 5 (COMPETING). Par défaut : 0 (PLAYING).
-        statusMsg: "utilisateurs non vérifiés !",
-
-        // —— Par défaut, les règles sont désactivées. Cela signifie que les règles seront cachées. Si vous souhaitez utiliser la fonction des règles, changez disabled par vos règles. Assurez-vous d'utiliser \n pour chaque saut de ligne et n'utilisez aucun symbole qui pourrait interférer avec JSON.
-        rulesEnabled: true,
-        rules: "Tapez vos règles ici si rulesEnabled est activé, assurez-vous d'utiliser \n pour les nouvelles lignes."
-    },
-
-    reCAPTCHA: {
-        secretKey: "",
-        publicKey: ""
-    }
+  "server": {
+    "domain": "server.example.com:00000", // Remplacez par votre domaine réel
+    "https": false, // Activez-le si vous utilisez HTTPS
+    "httpPort": 00000 // Remplacez par le port que vous souhaitez utiliser
+  },
+  "Discord": {
+    "token": "", // Le token de votre bot Discord
+    "botId": "", // L'ID du bot
+    "guildId": "", // L'ID du serveur où les commandes seront déployées
+    "verifiedRole": "", // Le rôle qui sera attribué à l'utilisateur une fois vérifié
+    "discordinvite": "", // Lien d'invitation pour rejoindre le serveur Discord
+    "removeRole": true, // Si défini à true, un rôle sera retiré après vérification
+    "removeRoleId": "", // L'ID du rôle à retirer lors de la vérification
+    "adminRoleId": "", // L'ID du rôle administrateur (si nécessaire)
+    "statusType": 3, // Type de statut du bot (1: STREAMING, 2: LISTENING, 3: WATCHING, 5: COMPETING)
+    "statusMsg": "", // Message de statut personnalisé affiché par le bot
+    "status": "dnd", // Statut du bot (online, idle, dnd, invisible)
+    "rulesEnabled": true, // Active l'affichage des règles si défini à true
+    "rulestitle": "", // Titre des règles affichées dans un embed
+    "rulescolor": "#0099ff", // Couleur de l'encadré des règles (en hexadécimal)
+    "rules": "" // Texte des règles (utilisez \n pour les sauts de ligne)
+  },
+  "reCAPTCHA": {
+    "secretKey": "", // Clé secrète reCAPTCHA obtenue via Google reCAPTCHA
+    "publicKey": ""  // Clé publique reCAPTCHA utilisée pour afficher le widget sur le site
+  }
 }
 ```
 
@@ -68,7 +66,3 @@ module.exports = {
 **Le bot échoue lors de la connexion**
 
 - Vous devez aller sur le tableau de bord de votre bot Discord et activer les deux intentions (*intents*). Remarque : Si votre bot est sur plus de 100 serveurs, vous devrez vérifier votre bot.
-
-## Aperçu
-Embed
-Website
