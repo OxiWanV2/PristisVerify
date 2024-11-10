@@ -24,8 +24,15 @@ body {
     transform: translate(-50%, -50%);
 }
 
-span {
+p {
+    padding-top: 10%;
     font-size: 28px;
     font-weight: 400;
     color: white;
+}
+
+span {
+    font-size: 18px;
+    font-weight: 200;
+    color: gray;
 }
