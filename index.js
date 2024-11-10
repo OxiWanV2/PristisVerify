@@ -1,5 +1,3 @@
-
-// —— Requiring the packages the we need.
 const fs = require("fs");
 const { Client, Collection, Partials } = require("discord.js");
 const { Signale } = require('signale');
@@ -12,60 +10,88 @@ const https = require('https');
 const pool = require('./pool');
 const config = require("./config.js");
 const logger = new Signale({ scope: 'Discord' });
+const licenselogger = new Signale({ scope: 'License' });
 
-// —— Initializing the client.
+const APIconfig = {
+  pluginName: 'PristisVerify'
+};
+
+const options = {
+  disabled: false,
+  interactive: false,
+  logLevel: 'info',
+  scope: 'custom',
+  secrets: [],
+  stream: process.stdout,
+  types: {
+    remind: {
+      badge: '!',
+      color: 'yellow',
+      label: 'rappel',
+      logLevel: 'info'
+    },
+    warningx: {
+      badge: '!',
+      color: 'yellow',
+      label: 'avis',
+      logLevel: 'info'
+    }
+  }
+};
+
+const loggerx = new Signale(options);
+
 const client = new Client({ 
-    intents: [ 131071 ], // Basically for (most?) of the intents.
+    intents: [ 131071 ],
     partials: [
         Partials.Channel
     ] 
 });
 
-// —— All event files of the event handler.
- const eventFiles = fs
- .readdirSync("./events")
- .filter((file) => file.endsWith(".js"));
+const eventFiles = fs
+.readdirSync("./events")
+.filter((file) => file.endsWith(".js"));
 
 for (const file of eventFiles) {
- const event = require(`./events/${file}`);
- if (event.once) {
-     client.once(event.name, (...args) => event.execute(...args, client));
- } else {
-     client.on(event.name, async (...args) => await event.execute(...args, client));
- }
+const event = require(`./events/${file}`);
+if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args, client));
+} else {
+    client.on(event.name, async (...args) => await event.execute(...args, client));
+}
 }
 
 client.slashCommands = new Collection();
 
-// —— Registration of Slash-Command Interactions.
 const slashCommands = fs.readdirSync("./public/slash");
 
 for (const module of slashCommands) {
-	const commandFiles = fs
-		.readdirSync(`./public/slash/${module}`)
-		.filter((file) => file.endsWith(".js"));
+ const commandFiles = fs
+   .readdirSync(`./public/slash/${module}`)
+   .filter((file) => file.endsWith(".js"))
 
-	for (const commandFile of commandFiles) {
-		const command = require(`./public/slash/${module}/${commandFile}`);
-		client.slashCommands.set(command.data.name, command);
-	}
+ for (const commandFile of commandFiles) {
+   const command = require(`./public/slash/${module}/${commandFile}`);
+   client.slashCommands.set(command.data.name, command);
+ }
 }
 
-// —— Registration of Slash-Commands in Discord API
-const rest = new REST({ version: "9" }).setToken(config.Discord.token);
-
-const commandJsonData = [
-	...Array.from(client.slashCommands.values()).map((c) => c.data.toJSON()),
-];
+const rest = new REST({ 'version': '9'}).setToken(config.Discord.token);
+const commandJsonData = Array.from(client.slashCommands.values()).map((c) => c.data.toJSON());
 
 (async () => {
-	try {
-		logger.success("Started refreshing application (/) commands.");
-		await rest.put(Routes.applicationGuildCommands(config.Discord.botId, config.Discord.guildId), { body: commandJsonData });
-		logger.success("Successfully reloaded application (/) commands.");
-	} catch (error) {
-		console.error(error);
-	}
+  try {
+		console.log(' ')
+        licenselogger.success(`Bot de OxiWan`);
+		console.log(' ')
+    logger.success("Démarrage du rafraîchissement des commandes d'application (/).");
+    await rest.put(Routes.applicationCommands(config.Discord.botId), {
+      'body': commandJsonData
+    });
+    logger.success("Commandes d'application (/) rechargées avec succès.");
+  } catch (error) {
+    console.error(error);
+  }
 })();
 
 async function addRole(userID) {
@@ -76,15 +102,15 @@ async function addRole(userID) {
 
         member.roles.add(role)
 			.catch(() => {
-				logger.error(`Failed to add role to user ${member.user.tag}! (Maybe verified role is above bot role?)`);
+				logger.error(`Échec de l'ajout du rôle à l'utilisateur ${member.user.tag} ! (Le rôle vérifié est peut-être au-dessus du rôle du bot ?)`);
 				return;
         	})
 			.then(() => {
-				logger.info(`Added verified role to user ${member.user.tag}.`);
+				logger.info(`Rôle vérifié ajouté à l'utilisateur ${member.user.tag}.`);
 			})
     } catch (e) {
 		console.log(e)
-        logger.error(`Failed to add role to user ${userID}!`);
+        logger.error(`Échec de l'ajout du rôle à l'utilisateur ${userID} !`);
     }
 }
 
@@ -99,48 +125,45 @@ async function removeRole(userID) {
 
 			member.roles.remove(removeRoleId)
 				.catch(() => {
-					logger.error(`Failed to remove role from user ${member.user.tag}! (Maybe role is above bot role?)`);
+					logger.error(`Échec de la suppression du rôle pour l'utilisateur ${member.user.tag} ! (Le rôle est peut-être au-dessus du rôle du bot ?)`);
 					return;
 				})
 				.then(() => {
-					logger.info(`Removed role from user ${member.user.tag}.`);
+					logger.info(`Rôle supprimé pour l'utilisateur ${member.user.tag}.`);
 				})
 			
 		} catch(e) {
-			logger.error(`Failed to remove role from user ${userID}!`);
+			logger.error(`Échec de la suppression du rôle pour l'utilisateur ${userID} !`);
 		}
 	} else {
-		logger.info(`Remove role is set to false, step skipped.`)
+		logger.info(`La suppression du rôle est désactivée, étape ignorée.`)
 	}  
 }
 
-// —— Login into your client application with bot's token.
 client.login(config.Discord.token)
 	.catch(() => {
-		logger.fatal('Failed to login! Is your intents enabled?');
+		logger.fatal('Échec de la connexion ! Vos intentions sont-elles activées ?');
 		process.exit(0);
 	})
 
-// —— And another thingy.
 const app = express(),
-     port = config.server.https ? 443 : config.server.httpPort;
+     port = config.server.https ? config.server.httpPort : config.server.httpPort;
 
-// —— Define render engine and assets path
+const rootDir = path.join(__dirname, '/');
+
 app.engine('html', require('ejs').renderFile);
-app.use(express.static(path.join(__dirname, '/assets')));
+app.use(express.static(path.join(rootDir, '/assets')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// GET /verify/id
 app.get('/verify/:verifyId?', (req, res) => {
-    if (!req.params.verifyId) return res.sendFile(path.join(__dirname, '/html/invalidLink.html'));
-    if (!pool.isValidLink(req.params.verifyId)) return res.sendFile(path.join(__dirname, '/html/invalidLink.html'));
-    res.render(path.join(__dirname, '/html/verify.html'), { publicKey: config.reCAPTCHA.publicKey });
+    if (!req.params.verifyId) return res.sendFile(path.join(rootDir, '/html/invalidLink.html'));
+    if (!pool.isValidLink(req.params.verifyId)) return res.sendFile(path.join(rootDir, '/html/invalidLink.html'));
+    res.render(path.join(rootDir, '/html/verify.html'), { publicKey: config.reCAPTCHA.publicKey });
 });
 
-// POST /verify/id
 app.post('/verify/:verifyId?', async (req, res) => {
-    if (!req.body || !req.body['g-recaptcha-response']) return res.sendFile(path.join(__dirname, '/html/invalidLink.html'));
+    if (!req.body || !req.body['g-recaptcha-response']) return res.sendFile(path.join(rootDir, '/html/invalidLink.html'));
 
     const response = await axios({
         method: 'post',
@@ -150,24 +173,59 @@ app.post('/verify/:verifyId?', async (req, res) => {
         }
     });
 
-    if (!response.data.success) return res.sendFile(path.join(__dirname, '/html/invalidCaptcha.html'));
-    if (!pool.isValidLink(req.params.verifyId)) return res.sendFile(path.join(__dirname, '/html/invalidLink.html'));
+    if (!response.data.success) return res.sendFile(path.join(rootDir, '/html/invalidCaptcha.html'));
+    if (!pool.isValidLink(req.params.verifyId)) return res.sendFile(path.join(rootDir, '/html/invalidLink.html'));
     await addRole(pool.getDiscordId(req.params.verifyId));
     await removeRole(pool.getDiscordId(req.params.verifyId));
     pool.removeLink(req.params.verifyId);
-    res.sendFile(path.join(__dirname, '/html/valid.html'));
+    res.sendFile(path.join(rootDir, '/html/valid.html'));
 });
 
 const start = () => {
+  const domain = config.server.domain === 'localhost' ? `${config.server.domain}:${config.server.httpPort}` : `${config.server.domain}`; 
+  logger.info(`URL WebAPI : ${config.server.https ? 'https://' : 'http://'}${domain}/verify/API_ID`);
 	if (config.https) {
 		https.createServer({
 			key: fs.readFileSync('private.pem'),
 			cert: fs.readFileSync('certificate.pem')
-		}, app).listen(port, () => logger.info(`Listening on port ${port}.`));
+		}, app).listen(port, () => logger.info(`Écoute sur le port ${port}.`));
 	} else {
-		app.listen(port, () => logger.info(`Listening on port ${port}.`));
+		app.listen(port, () => logger.info(`Écoute sur le port ${port}.`));
 	}
 }
 
-// —— Start the server
+function reconnect(client, attempts = 1) {
+    setTimeout(() => {
+        client.login(config.Discord.token).catch(error => {
+            logger.error('Échec de la reconnexion :', error.message);
+            reconnect(client, attempts + 1);
+        });
+    }, Math.min(1000 * 2 ** attempts, 30000));
+}
+
+client.on('disconnect', () => {
+    logger.warn('Bot déconnecté. Tentative de reconnexion...');
+    reconnect(client);
+});
+
+process.on('uncaughtException', (error) => {
+    logger.fatal('Une exception non gérée a été capturée :', error);r
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    logger.fatal('Une promesse non gérée a été rejetée :', reason);
+});
+
+client.on('shardError', (error) => {
+    logger.error('Erreur critique sur le shard:', error);
+});
+
+client.on('rateLimit', (info) => {
+    logger.warn(`Limite de requêtes atteinte : ${info.timeout}ms`);
+});
+
+client.on('error', (error) => {
+    logger.error('Erreur générale du client Discord:', error);
+});
+
 start();
