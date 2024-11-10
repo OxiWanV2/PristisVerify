@@ -1,18 +1,69 @@
 <html>
     <head>
-        <!-- HTML data -->
-        <title>Discord Verification</title>
-        <!-- CSS file -->
+        <title>X - Erreur</title>
         <link type='text/css' rel="stylesheet" href="../css/style.css">
-        <!-- JavaScript files -->
+        <style>
+            .error-animation { margin:150px auto;}
+                    
+            .error-mark {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                display: block;
+                stroke-width: 2;
+                stroke: #e74c3c;
+                stroke-miterlimit: 10;
+                box-shadow: inset 0px 0px 0px #e74c3c;
+                animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+                position:relative;
+                top: 5px;
+                right: 5px;
+               margin: 0 auto;
+            }
+            .error-mark__x {
+                transform-origin: 50% 50%;
+                stroke-dasharray: 48;
+                stroke-dashoffset: 48;
+                animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+            }
+            
+            @keyframes stroke {
+                100% {
+                    stroke-dashoffset: 0;
+                }
+            }
+            
+            @keyframes scale {
+                0%, 100% {
+                    transform: none;
+                }
+            
+                50% {
+                    transform: scale3d(1.1, 1.1, 1);
+                }
+            }
+            
+            @keyframes fill {
+                100% {
+                    box-shadow: inset 0px 0px 0px 30px transparent;
+                }
+            }
+        </style>
         <script type='text/javascript' src="../js/jquery.min.js"></script>
         <script type='text/javascript' src="../js/particleground.min.js"></script>
         <script type='text/javascript' src="../js/particles.js"></script>
     </head>
     <body>
+    <body>
         <div id="particles"></div>
         <div id="app">
-            <span>Invalid reCAPTCHA!</span>
+            <div class="error-animation">
+                <svg class="error-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                  <path class="error-mark__x" fill="transparent" d="M16 16 36 36M36 16 16 36"/>
+                </svg>
+                <p>Une erreur et survenue (ReCaptcha Error) merci de report cette erreur a X</p>
+            </div>                        
         </div>
+    </body>
     </body>
 </html>
